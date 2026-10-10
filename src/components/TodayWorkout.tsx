@@ -46,7 +46,7 @@ export const TodayWorkout: React.FC<TodayWorkoutProps> = ({
   const [history, setHistory] = useState<WorkoutLogItem[]>([]);
 
   useEffect(() => {
-    const saved = localStorage.getItem('gymbuddy_history');
+    const saved = localStorage.getItem('nestfit_history') || localStorage.getItem('gymbuddy_history');
     if (saved) {
       try {
         setHistory(JSON.parse(saved));

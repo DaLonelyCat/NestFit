@@ -66,7 +66,7 @@ export const WorkoutRunner: React.FC<WorkoutRunnerProps> = ({
   const [showSwapModal, setShowSwapModal] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('gymbuddy_history');
+    const saved = localStorage.getItem('nestfit_history') || localStorage.getItem('gymbuddy_history');
     if (saved) {
       try {
         setHistory(JSON.parse(saved));
@@ -261,10 +261,10 @@ export const WorkoutRunner: React.FC<WorkoutRunnerProps> = ({
       }))
     };
 
-    const savedHistoryStr = localStorage.getItem('gymbuddy_history');
+    const savedHistoryStr = localStorage.getItem('nestfit_history') || localStorage.getItem('gymbuddy_history');
     const localHistory: WorkoutLogItem[] = savedHistoryStr ? JSON.parse(savedHistoryStr) : [];
     localHistory.unshift(logItem);
-    localStorage.setItem('gymbuddy_history', JSON.stringify(localHistory));
+    localStorage.setItem('nestfit_history', JSON.stringify(localHistory));
 
     sound.playFinishChime();
     confetti({

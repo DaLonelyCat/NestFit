@@ -17,7 +17,7 @@ export const EquipmentSettings: React.FC = () => {
   const [history, setHistory] = useState<WorkoutLogItem[]>([]);
 
   useEffect(() => {
-    const saved = localStorage.getItem('gymbuddy_history');
+    const saved = localStorage.getItem('nestfit_history') || localStorage.getItem('gymbuddy_history');
     if (saved) {
       try {
         setHistory(JSON.parse(saved));
@@ -29,6 +29,7 @@ export const EquipmentSettings: React.FC = () => {
 
   const handleClearHistory = () => {
     if (window.confirm('Clear all local workout history? This cannot be undone.')) {
+      localStorage.removeItem('nestfit_history');
       localStorage.removeItem('gymbuddy_history');
       setHistory([]);
     }

@@ -10,13 +10,13 @@ import { Exercise, DayRoutine, EquipmentMode, TrainingMode } from './types';
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('today');
   const [isDark, setIsDark] = useState<boolean>(() => {
-    const saved = localStorage.getItem('gymbuddy_theme');
+    const saved = localStorage.getItem('nestfit_theme') || localStorage.getItem('gymbuddy_theme');
     if (saved) return saved === 'dark';
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   const [trainingMode, setTrainingMode] = useState<TrainingMode>(() => {
-    const saved = localStorage.getItem('gymbuddy_training_mode');
+    const saved = localStorage.getItem('nestfit_training_mode') || localStorage.getItem('gymbuddy_training_mode');
     return (saved === 'gym' || saved === 'home') ? saved : 'home';
   });
 
@@ -37,16 +37,16 @@ export const App: React.FC = () => {
   });
 
   useEffect(() => {
-    localStorage.setItem('gymbuddy_training_mode', trainingMode);
+    localStorage.setItem('nestfit_training_mode', trainingMode);
   }, [trainingMode]);
 
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add('dark');
-      localStorage.setItem('gymbuddy_theme', 'dark');
+      localStorage.setItem('nestfit_theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
-      localStorage.setItem('gymbuddy_theme', 'light');
+      localStorage.setItem('nestfit_theme', 'light');
     }
   }, [isDark]);
 
@@ -138,7 +138,7 @@ export const App: React.FC = () => {
       </main>
 
       <footer className="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
-        <p>GymBuddy • Workout & Weight Companion</p>
+        <p>NestFit • Workout & Weight Companion</p>
       </footer>
     </div>
   );

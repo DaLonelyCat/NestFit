@@ -48,7 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <Dumbbell className="w-4 h-4 transform -rotate-45" />
               </div>
               <span className="text-base font-bold tracking-tight text-white flex items-center">
-                Gym<span className="text-emerald-400">Buddy</span>
+                Nest<span className="text-emerald-400">Fit</span>
               </span>
             </div>
 
