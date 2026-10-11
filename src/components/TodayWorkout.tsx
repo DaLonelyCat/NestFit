@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { DayRoutine, Exercise, EquipmentMode, TrainingMode, WorkoutLogItem } from '../types';
-import { WEEKLY_SPLIT, getTodayRoutine, getExercisesForRoutine } from '../utils/workoutSplit';
+import { SPLIT_TEMPLATES, getTodayRoutine, getExercisesForRoutine } from '../utils/workoutSplit';
+import { useAuth } from '../context/AuthContext';
+import { ScheduleCustomizerModal } from './ScheduleCustomizerModal';
 import { EXERCISES } from '../data/exercises';
 import {
   getMuscularReadiness,
@@ -18,7 +20,8 @@ import {
   Zap,
   Clock,
   Trash2,
-  RotateCcw
+  RotateCcw,
+  SlidersHorizontal
 } from 'lucide-react';
 import { DumbbellVisualizer } from './DumbbellVisualizer';
 
@@ -39,8 +42,15 @@ export const TodayWorkout: React.FC<TodayWorkoutProps> = ({
   onStartWorkout,
   onNavigateToVisualizer
 }) => {
-  const todayDefault = getTodayRoutine();
+  const { activeSchedule, activeTemplateId } = useAuth();
+  const todayDefault = getTodayRoutine(activeSchedule);
   const [selectedRoutine, setSelectedRoutine] = useState<DayRoutine>(todayDefault);
+  const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
+
+  useEffect(() => {
+    const updated = getTodayRoutine(activeSchedule);
+    setSelectedRoutine(updated);
+  }, [activeSchedule]);
 
   // History state for intelligence engine
   const [history, setHistory] = useState<WorkoutLogItem[]>([]);
@@ -265,22 +275,39 @@ export const TodayWorkout: React.FC<TodayWorkoutProps> = ({
 
       {/* Weekly Schedule */}
       <div className="rounded-2xl p-4 bg-cyber-surface border border-cyber-border">
-        <div className="flex items-center justify-between mb-3 px-1">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-            Weekly Schedule
-          </span>
-          {!isCurrentToday && (
+        <div className="flex items-center justify-between mb-3 px-1 flex-wrap gap-2">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Weekly Schedule
+            </span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-semibold truncate max-w-[170px]">
+              {SPLIT_TEMPLATES[activeTemplateId]?.name || 'Custom Split'}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2.5">
             <button
-              onClick={() => setSelectedRoutine(todayDefault)}
-              className="text-xs font-semibold text-emerald-400 hover:underline cursor-pointer"
+              onClick={() => setIsCustomizerOpen(true)}
+              className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-1.5 cursor-pointer bg-cyber-dark/80 hover:bg-cyber-dark border border-cyber-border px-2.5 py-1 rounded-lg transition-colors"
+              title="Customize workout split & days"
             >
-              Back to Today ({todayDefault.dayName.slice(0, 3)})
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <span>Customize Split</span>
             </button>
-          )}
+
+            {!isCurrentToday && (
+              <button
+                onClick={() => setSelectedRoutine(todayDefault)}
+                className="text-xs font-semibold text-slate-400 hover:text-white hover:underline cursor-pointer"
+              >
+                Back to Today ({todayDefault.dayName.slice(0, 3)})
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-7 gap-1 sm:gap-2">
-          {WEEKLY_SPLIT.map((split) => {
+          {activeSchedule.map((split) => {
             const isSelected = split.dayName === selectedRoutine.dayName;
             const isToday = split.dayName === todayDefault.dayName;
 
@@ -709,6 +736,12 @@ export const TodayWorkout: React.FC<TodayWorkoutProps> = ({
           </div>
         );
       })()}
+
+      {/* Schedule Customizer Modal */}
+      <ScheduleCustomizerModal
+        isOpen={isCustomizerOpen}
+        onClose={() => setIsCustomizerOpen(false)}
+      />
     </div>
   );
 };

@@ -6,8 +6,10 @@ import { ExerciseCatalog } from './components/ExerciseCatalog';
 import { EquipmentSettings } from './components/EquipmentSettings';
 import { WorkoutRunner } from './components/WorkoutRunner';
 import { Exercise, DayRoutine, EquipmentMode, TrainingMode } from './types';
+import { AuthProvider } from './context/AuthContext';
+import { AuthModal } from './components/AuthModal';
 
-export const App: React.FC = () => {
+const AppContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('today');
   const [isDark, setIsDark] = useState<boolean>(() => {
     const saved = localStorage.getItem('nestfit_theme') || localStorage.getItem('gymbuddy_theme');
@@ -140,7 +142,18 @@ export const App: React.FC = () => {
       <footer className="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
         <p>NestFit • Workout & Weight Companion</p>
       </footer>
+
+      {/* Global Auth Modal */}
+      <AuthModal />
     </div>
+  );
+};
+
+export const App: React.FC = () => {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 };
 

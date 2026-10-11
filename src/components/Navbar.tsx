@@ -1,6 +1,7 @@
 import React from 'react';
-import { Dumbbell, Calendar, BookOpen, Settings, Sun, Moon } from 'lucide-react';
+import { Dumbbell, Calendar, BookOpen, Settings, Sun, Moon, User as UserIcon, LogIn, LogOut } from 'lucide-react';
 import { TrainingMode } from '../types';
+import { useAuth } from '../context/AuthContext';
 
 export type TabType = 'today' | 'visualizer' | 'catalog' | 'equipment';
 
@@ -23,6 +24,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   setTrainingMode,
   hideMobileBottomBar = false
 }) => {
+  const { user, openAuthModal, logout } = useAuth();
+
   const navItems: { id: TabType; label: string; icon: React.ReactNode }[] = [
     { id: 'today', label: 'Today', icon: <Calendar className="w-5 h-5 sm:w-4 sm:h-4" /> },
     { id: 'visualizer', label: 'Dumbbell', icon: <Dumbbell className="w-5 h-5 sm:w-4 sm:h-4" /> },
@@ -73,8 +76,42 @@ export const Navbar: React.FC<NavbarProps> = ({
               })}
             </nav>
 
-            {/* Right Actions: Environment, Theme */}
+            {/* Right Actions: Account, Environment, Theme */}
             <div className="flex items-center gap-2">
+              {/* Account / Auth Button */}
+              {user ? (
+                <div className="relative group">
+                  <button
+                    className="flex items-center gap-1.5 px-2.5 py-1 sm:py-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-xs font-semibold cursor-pointer"
+                    title={`Logged in as ${user.name} (${user.email})`}
+                  >
+                    <UserIcon className="w-3.5 h-3.5 text-emerald-400" />
+                    <span className="hidden sm:inline max-w-[90px] truncate">{user.name.split(' ')[0]}</span>
+                  </button>
+                  <div className="absolute right-0 mt-1 w-44 rounded-xl bg-cyber-surface border border-cyber-border shadow-xl p-1.5 hidden group-hover:block z-50">
+                    <div className="px-2.5 py-1.5 border-b border-cyber-border/60 mb-1">
+                      <p className="text-xs font-bold text-white truncate">{user.name}</p>
+                      <p className="text-[10px] text-slate-400 truncate">{user.email}</p>
+                    </div>
+                    <button
+                      onClick={logout}
+                      className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs text-rose-300 hover:bg-rose-950/40 hover:text-rose-200 transition-colors cursor-pointer"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>Log Out</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={openAuthModal}
+                  className="flex items-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-cyber-border hover:border-emerald-500/50 bg-slate-900 text-slate-300 hover:text-white text-xs font-semibold transition-all cursor-pointer"
+                >
+                  <LogIn className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="hidden xs:inline">Sign In</span>
+                </button>
+              )}
+
               {/* Environment Toggle */}
               <button
                 onClick={() => setTrainingMode(trainingMode === 'home' ? 'gym' : 'home')}

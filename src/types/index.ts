@@ -61,13 +61,42 @@ export interface WeightCalculationResult {
   nearestHigher?: number;
 }
 
+export type DayOfWeek = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
+
+export type SplitTemplateId =
+  | 'hybrid_default'
+  | 'ppl_6day'
+  | 'ppl_3day'
+  | 'upper_lower_4day'
+  | 'full_body_3day'
+  | 'bro_split_5day'
+  | 'custom';
+
+export type RoutineCategoryKey =
+  | 'push'
+  | 'pull'
+  | 'legs'
+  | 'upper'
+  | 'lower'
+  | 'full_body'
+  | 'chest'
+  | 'back'
+  | 'shoulders'
+  | 'arms'
+  | 'rest';
+
 export interface DayRoutine {
-  dayName: 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
+  dayName: DayOfWeek;
   splitName: string;
   tagline: string;
   focusMuscles: MuscleGroup[];
   isRestDay: boolean;
   exerciseIds: number[];
+}
+
+export interface ExtendedDayRoutine extends DayRoutine {
+  gymExerciseIds: number[];
+  categoryKey?: RoutineCategoryKey;
 }
 
 export interface SuperSetPair {
@@ -93,4 +122,23 @@ export interface WorkoutLogItem {
       toFailure?: boolean;
     }[];
   }[];
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  createdAt: string;
+}
+
+export interface UserScheduleData {
+  templateId: SplitTemplateId;
+  scheduleData: ExtendedDayRoutine[];
+  updatedAt: string;
+}
+
+export interface AuthResponse {
+  user: User;
+  token: string;
+  schedule?: UserScheduleData | null;
 }
