@@ -1,0 +1,8 @@
+name = "nestfit"
+compatibility_date = "2024-09-23"
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nestfit-db"
+database_id = "4a3d5d80-c7f6-4f98-9715-b5b766a5ed33"
