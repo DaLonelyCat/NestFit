@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import {
-  SPLIT_TEMPLATES,
   ROUTINE_CATALOG,
   getSplitTemplate,
   buildScheduleFromMapping,
